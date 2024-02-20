@@ -5,7 +5,9 @@ import java.lang.IllegalArgumentException
 enum class Screens {
 
   SurahsListScreen,
-  SurahScreen;
+  SurahScreen,
+    PrayingTimeScreen,
+    AzkarScreen;
   companion object {
     fun fromRoute(route: String):Screens=
       when(route.substringBefore("/")){

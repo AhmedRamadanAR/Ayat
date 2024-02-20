@@ -46,8 +46,6 @@ import com.example.ayat.ui.theme.Purple40
 @Composable
 fun DoaaScreen(){
     val vm= viewModel<DoaaViewModel>()
-
-
     LazyColumn (modifier = Modifier
         .fillMaxSize()
         .padding(4.dp),

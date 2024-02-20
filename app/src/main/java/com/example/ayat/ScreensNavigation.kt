@@ -8,7 +8,7 @@ import androidx.navigation.navArgument
 import com.example.ayat.ui.SurahListScreen
 import com.example.ayat.ui.SurahScreen
 @Composable
-fun setScreen(){
+fun SetScreen(){
     val navController= rememberNavController()
 
     NavHost(navController = navController, startDestination = Screens.SurahsListScreen.name ){

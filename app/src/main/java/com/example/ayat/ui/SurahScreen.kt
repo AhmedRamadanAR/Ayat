@@ -74,18 +74,18 @@ fun SurahScreen(surahId:Int) {
     val vm: SurahViewModel = viewModel(
         factory = SurahViewModelFactory(app, SavedStateHandle(mapOf("surahId" to surahId))))
     LazyColumn {
-        item {
-            Slider(
-                value = vm.mediaProgress,
-                valueRange = -1f..vm.mediaDuration,
-                onValueChange = { newProgress ->
-                    vm.mediaPlayer?.seekTo(newProgress.toInt())
-                }
-            )
-            val minutes = (vm.mediaDuration / 60).toInt()
-            val seconds = (vm.mediaDuration % 60).toInt()
-            Text(text = String.format("%02d:%02d", minutes, seconds))
-        }
+//        item {
+//            Slider(
+//                value = vm.mediaProgress,
+//                valueRange = -1f..vm.mediaDuration,
+//                onValueChange = { newProgress ->
+//                    vm.mediaPlayer?.seekTo(newProgress.toInt())
+//                }
+//            )
+//            val minutes = (vm.mediaDuration / 60).toInt()
+//            val seconds = (vm.mediaDuration % 60).toInt()
+//            Text(text = String.format("%02d:%02d", minutes, seconds))
+//        }
 
 
         itemsIndexed(vm.state) { index, ayah ->

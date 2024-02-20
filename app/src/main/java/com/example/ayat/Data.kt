@@ -1,7 +1,26 @@
 package com.example.ayat
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+
+@Entity (tableName = "MyZekr")
+data class MyZekr(
+    @PrimaryKey
+    var zekr:String
+)
+data class MEAzkar (
+    @SerializedName("Morning_Azkar" ) var MorningAzkar : ArrayList<MorningEveningAzkar> = arrayListOf(),
+    @SerializedName("Evening_Azkar" ) var EveningAzkar : ArrayList<MorningEveningAzkar> = arrayListOf()
+)
+data class MorningEveningAzkar (
+    var showAnimation : Boolean = false,
+    @SerializedName("count"       ) var count: Int = 0,
+    @SerializedName("description" ) var description : String = "",
+    @SerializedName("content"     ) var content     : String = ""
+
+)
 data class Doaa(
 @SerializedName("arab")
 val doaatext:String,

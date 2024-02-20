@@ -19,6 +19,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
+fun AzanScreen() {
+    Text(text = "Coming Soon !")
+
+}
+@Composable
 fun AnimatedCrescentMoon() {
     // This will generate values from 0f to 50f and back
     val jump by rememberInfiniteTransition().animateFloat(
@@ -33,7 +38,9 @@ fun AnimatedCrescentMoon() {
     var lampOn by remember { mutableStateOf(true) }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Canvas(modifier = Modifier.size(100.dp).offset(y = jump.dp)) {
+        Canvas(modifier = Modifier
+            .size(100.dp)
+            .offset(y = jump.dp)) {
             drawArc(
                 color = if (lampOn) Color.Yellow else Color.Gray,
                 startAngle = 45f,
