@@ -61,7 +61,6 @@ import com.example.ayat.MorningEveningAzkarViewModel
 import com.example.ayat.MyZekr
 import com.example.ayat.R
 import com.example.ayat.ui.theme.Purple40
-import com.example.ayat.ui.theme.Purple80
 import com.example.ayat.ui.theme.softPurple
 import kotlinx.coroutines.launch
 
@@ -180,7 +179,7 @@ fun ItemsScreen() {
 
         val zekrList by vm.zekrList.collectAsState()
       Box(modifier =Modifier.fillMaxSize() ){
-          LazyColumn() {
+          LazyColumn(Modifier.fillMaxSize().padding(bottom = 60.dp)) {
 
               items(zekrList) { item ->
                   Item(item = item, vm = vm)

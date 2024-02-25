@@ -13,7 +13,7 @@ import kotlinx.coroutines.withContext
 
 class DoaaViewModel(private  val stateHandle:SavedStateHandle) :ViewModel(){
     var state by  mutableStateOf(emptyList<Doaa>())
-     private var apiService: DoaaApiService = RetrofitClient.apiServiceInstanceDoaa()
+     private var apiService: AyatApiService = RetrofitClient.apiServiceInstanceDoaa()
 private  val errorHandler= CoroutineExceptionHandler{_,throwable->
     throwable.printStackTrace()
 

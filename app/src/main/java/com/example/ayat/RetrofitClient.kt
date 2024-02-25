@@ -10,8 +10,8 @@ object RetrofitClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-
-    fun apiServiceInstanceDoaa() :DoaaApiService = instance("https://ayat-1-default-rtdb.firebaseio.com/").create(DoaaApiService::class.java)
-    fun apiServiceInstanceSurah():DoaaApiService= instance("https://cdn.islamic.network/quran/").create(DoaaApiService::class.java)
+fun apiServiceInstanceAzan():AyatApiService= instance("https://api.aladhan.com/v1/").create(AyatApiService::class.java)
+    fun apiServiceInstanceDoaa() :AyatApiService = instance("https://ayat-1-default-rtdb.firebaseio.com/").create(AyatApiService::class.java)
+    fun apiServiceInstanceSurah():AyatApiService= instance("https://cdn.islamic.network/quran/").create(AyatApiService::class.java)
 }
 

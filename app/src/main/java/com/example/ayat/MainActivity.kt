@@ -1,5 +1,6 @@
 package com.example.ayat
 
+import AzanScreen
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -32,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -52,7 +54,7 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+installSplashScreen()
         setContent {
 
             AyatTheme {
@@ -61,7 +63,8 @@ class MainActivity : ComponentActivity() {
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
                     //DoaaScreen()
                     //SurahScreen()
-                    MyApp()
+                   MyApp()
+                    //AzanScreen()
                     // SurahListScreen()
                     //   setScreen()
                    // MorningEveningScreen()
@@ -87,7 +90,9 @@ fun MyApp(){
     Scaffold (
         modifier= Modifier.fillMaxSize(),
         bottomBar = {
-            NavigationBar(contentColor = Purple80, modifier =Modifier.fillMaxWidth().height(65.dp)) {
+            NavigationBar(contentColor = Purple80, modifier = Modifier
+                .fillMaxWidth()
+                .height(65.dp)) {
                 items.forEach { screen->
                     NavigationBarItem(selected = currentRoute==screen.title, onClick = {
                         navController.navigate(screen.route){

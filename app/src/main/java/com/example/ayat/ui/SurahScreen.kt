@@ -63,9 +63,6 @@ import com.example.ayat.SurahViewModel
 import com.example.ayat.SurahViewModelFactory
 
 import com.example.ayat.ui.theme.AyatTheme
-import com.example.ayat.ui.theme.darkGrey
-import com.example.ayat.ui.theme.softPurple
-
 
 @Composable
 fun SurahScreen(surahId:Int) {
@@ -101,10 +98,9 @@ fun SurahScreen(surahId:Int) {
 fun SurahItem(ayah: Ayahs, vm:SurahViewModel, expandedState: MutableState<Boolean>, onClick: () -> Unit) {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         Card(
-            Modifier.padding(8.dp),
-            elevation = CardDefaults.cardElevation(4.dp),
-            shape = RoundedCornerShape(16.dp),
-            border = BorderStroke(1.dp, softPurple)
+           modifier =  Modifier.padding(6.dp),
+            elevation = CardDefaults.cardElevation(1.dp),
+            shape = RoundedCornerShape(10.dp),
         ) {
             Column(Modifier.padding(16.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -117,19 +113,21 @@ fun SurahItem(ayah: Ayahs, vm:SurahViewModel, expandedState: MutableState<Boolea
                     IconButton(onClick = {
                         onClick()
                     }) {
-                        Icon(Icons.Filled.PlayArrow, contentDescription="Play", tint = softPurple)
+                        Icon(Icons.Filled.PlayArrow, contentDescription="Play", tint = Color.Gray)
                     }
                     QuraaList(vm, expandedState)
 
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = ayah.text,
-                    modifier = Modifier.fillMaxSize(),
-                    textAlign = TextAlign.Right,
-                    style = TextStyle(color = darkGrey, fontSize = 28.sp, fontWeight = FontWeight.Normal)
-                )
+                Box(modifier =Modifier.fillMaxSize() ){
+                    Text(
+                        text = ayah.text,
+                        modifier = Modifier.fillMaxSize(),
+                        textAlign = TextAlign.Right,
+                        style = TextStyle(color = Color(0xFF000000), fontSize = 28.sp, fontWeight = FontWeight.Normal)
+                    )
+                }
+
             }
         }
     }
@@ -186,7 +184,7 @@ fun AyahIcon(painter: Painter,contentDescription:String,number:Int) {
         Text(
             text = number.toString(),
             modifier = Modifier.align(Alignment.Center),
-            style = TextStyle(color = Color.Black, fontSize = 15.sp)
+            style = TextStyle(color = Color.DarkGray, fontSize = 15.sp)
         )
 
     }

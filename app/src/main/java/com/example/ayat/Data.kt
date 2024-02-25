@@ -92,4 +92,107 @@ data class References (
     @SerializedName("revelationType"         ) var revelationType         : String = ""
 
 )
+data class Location(
+    val latitude: Double,
+    val longitude: Double,
+)
+data class Method(
+    val location: Location,
+)
+data class Meta(
+    val latitude: Double,
+    val longitude: Double,
+    val timezone: String,
+    val method: Method,
+)
+data class Month2(
+    val number: Long,
+    val en: String,
+    val ar: String,
+)
+data class Weekday2(
+    val en: String,
+    val ar: String,
+)
+data class Hijri(
+    val date: String,
+    val format: String,
+    val day: String,
+    val weekday: Weekday2,
+    val month: Month2,
+    val year: String,
+)
+data class Weekday(
+    val en: String,
+)
+
+data class Month(
+      val number: Long,
+    val en: String,
+)
+data class Gregorian(
+    @SerializedName("date"  )  val date: String,
+    @SerializedName("format"  )   val format: String,
+    @SerializedName("day"  )  val day: String,
+    @SerializedName("weekday"  )   val weekday: Weekday,
+    @SerializedName("month"  )  val month: Month,
+    @SerializedName("year"  )  val year: String,
+)
+data class Date(
+    @SerializedName("readable"  )  val readable: String,
+    @SerializedName("timestamp"  )   val timestamp: String,
+    @SerializedName("gregorian"  ) val gregorian: Gregorian,
+    @SerializedName("hijri"  )   val hijri: Hijri,
+)
+
+data class Timings (
+
+    @SerializedName("Fajr"       ) var Fajr       : String= "",
+    @SerializedName("Sunrise"    ) var Sunrise    : String= "",
+    @SerializedName("Dhuhr"      ) var Dhuhr      : String= "",
+    @SerializedName("Asr"        ) var Asr        : String= "",
+    @SerializedName("Sunset"     ) var Sunset     : String= "",
+    @SerializedName("Maghrib"    ) var Maghrib    : String= "",
+    @SerializedName("Isha"       ) var Isha       : String= "",
+    @SerializedName("Imsak"      ) var Imsak      : String= "",
+    @SerializedName("Midnight"   ) var Midnight   : String= "",
+    @SerializedName("Firstthird" ) var Firstthird : String= "",
+    @SerializedName("Lastthird"  ) var Lastthird  : String= ""
+
+)
+
+data class Root(
+    @SerializedName("code"  )    val code: Long,
+    @SerializedName("status"  )    val status: String,
+    @SerializedName("data"  )  val data: List<Daum>,
+)
+data class Daum(
+    @SerializedName("timings"  )    val timings: Timings,
+    @SerializedName("date"  )  val date: Date,
+    @SerializedName("meta"  )    val meta: Meta,
+)
+@Entity
+data class MonthlyPrayingTime(
+ var Fajr       : String= "",
+   var Sunrise    : String= "",
+   var Dhuhr      : String= "",
+  var Asr        : String= "",
+ var Sunset     : String= "",
+ var Maghrib    : String= "",
+  var Isha       : String= "",
+ val dateHijri: String="",
+ val dayHijri: String="",
+ val timestamp: String="",
+ val monthNumberHijri: Long=0,
+ val monthNumberGregorian: Long=0,
+ val monthArabicHijri: String="",
+ val yearGregorian: String="",
+ @PrimaryKey
+ val dateGregorian: String,
+ val formatGregorian: String="",
+ val dayGregorian: String="",
+ val yearHijri: String="",
+    val today:String=""
+)
+
 
