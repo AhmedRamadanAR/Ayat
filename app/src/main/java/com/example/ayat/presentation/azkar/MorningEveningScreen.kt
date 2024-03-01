@@ -1,4 +1,4 @@
-package com.example.ayat.ui
+package com.example.ayat.presentation.azkar
 
 import android.util.Log
 
@@ -30,12 +30,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.ayat.MorningEveningAzkar
-import com.example.ayat.MorningEveningAzkarViewModel
+import com.example.ayat.presentation.doaa.DoaaText
 import com.example.ayat.R
 import com.example.ayat.ui.theme.Purple40
 

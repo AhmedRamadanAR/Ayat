@@ -1,88 +1,59 @@
-import android.Manifest
-import android.content.pm.PackageManager
-import android.text.Layout
+import android.annotation.SuppressLint
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.example.ayat.AzanViewModel
-import com.example.ayat.Daum
-import com.example.ayat.MonthlyPrayingTime
+import com.example.ayat.presentation.azan.AzanViewModel
+import com.example.ayat.MonthlyPrayerTime
 import com.example.ayat.R
-import com.example.ayat.Timings
-import com.example.ayat.ui.theme.Purple40
-import com.example.ayat.ui.theme.Purple80
-import com.example.ayat.ui.theme.darkGrey
 import com.example.ayat.ui.theme.softPurple
-import kotlinx.coroutines.delay
 
 data class x(val x: String, val b: String)
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun AzanScreen() {
-    //("صلاة الفجر","صلاة الظهر","صلاة العصر","صلاة المغرب","صلاة العشاء")
-    //  val x= listOf<x>(x("صلاة الفجر","11:00"),x("صلاة الظهر","12:00"),x("صلاة الفجر","11:00"),x("صلاة الفجر","11:00"),x("صلاة الفجر","11:00"))
-    //   val y = listOf("11:00","12:40","10:40","20:00","31:30")
     val vm: AzanViewModel = viewModel()
-    val countdownTime by vm._countdownTime.collectAsState("")
+    val prayerTime by vm.prayerTime.collectAsState()
     val context= LocalContext.current
 
 //    val permissions = arrayOf(
@@ -119,7 +90,13 @@ fun AzanScreen() {
 //    }
 //
 
+
             Box(modifier = Modifier.fillMaxSize()){
+
+                val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.azan1))
+                if (prayerTime.isLoading) CircularProgressIndicator(modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(10.dp))
 
                 Image(
                     modifier = Modifier
@@ -129,32 +106,54 @@ fun AzanScreen() {
                     painter = painterResource(id = R.drawable.test),
                     contentDescription = "", alpha = 0.8f
                 )
-                         val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.azan1))
+                if (prayerTime.error!=null) {
+                    Toast.makeText(context,"من فضلك يرجى الاتصال بالانترنت",Toast.LENGTH_LONG).show()
+                }
+
             LottieAnimation(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().size(600.dp),
                 composition = composition,
-                iterations = 1
+                iterations = 1,
+                contentScale = ContentScale.Crop
             )
                 Column (modifier = Modifier.fillMaxSize()){
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ){
-                        Text(vm.prayingTime.today +" "+vm.prayingTime.dayHijri+" "+ vm.prayingTime.monthArabicHijri, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = Purple40, fontFamily = FontFamily.Monospace)
-                        Text(vm.prayingTime.dateGregorian,fontSize = 20.sp, fontWeight = FontWeight.Medium, color = Purple40)
+                        Text(prayerTime.monthlyPrayerTime.today +" "+prayerTime.monthlyPrayerTime.dayHijri+" "+ prayerTime.monthlyPrayerTime.monthArabicHijri, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = Color.Black, fontFamily = FontFamily.Monospace)
+                        Text(prayerTime.monthlyPrayerTime.dateGregorian,fontSize = 20.sp, fontWeight = FontWeight.Medium, color = Color.Black)
 
                     }
                     Spacer(modifier = Modifier.padding(20.dp))
 
-
                     Row (modifier=Modifier.fillMaxSize(),horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.Top){
-                        Text(text = "متبقى على الصلاة القادمة ${countdownTime}",fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = Purple40, letterSpacing = 0.10.sp)
+                        Text(text = "متبقى على صلاة ${prayerTime.nextPrayerTime}  ${prayerTime.countDownTime} ",fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = Color.DarkGray, letterSpacing = 0.10.sp)
 
                     }
 
 
                 }
 
+                Column (modifier= Modifier
+                    .fillMaxSize()
+                    .padding(vertical = 120.dp),Arrangement.Center){
+                    Card(
+                        shape = RoundedCornerShape(30.dp),
+                        modifier = Modifier
+                            .padding(vertical = 10.dp, horizontal = 10.dp)
+                            .fillMaxWidth(),
+                        elevation = CardDefaults.cardElevation(30.dp)
+                    ) {
+
+
+
+
+                        item(prayerTime.monthlyPrayerTime,prayerTime.nextPrayerTime)
+                    }
+                }
+
+            }
 
 
             }
@@ -165,25 +164,6 @@ fun AzanScreen() {
 
 
 
-        Column (modifier= Modifier
-            .fillMaxSize()
-            .padding(vertical = 120.dp),Arrangement.Center){
-            Card(
-                shape = RoundedCornerShape(30.dp),
-                modifier = Modifier
-                    .padding(vertical = 10.dp, horizontal = 10.dp)
-                    .fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(30.dp)
-            ) {
-
-
-
-
-                item(vm.prayingTime)
-            }
-        }
-
-        }
 
 
 
@@ -193,10 +173,11 @@ fun AzanScreen() {
 
 
 @Composable
-fun item(timings: MonthlyPrayingTime) {
-
+    fun item(timings: MonthlyPrayerTime, nextPrayerName: String) {
     Column(
-        modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -204,32 +185,44 @@ fun item(timings: MonthlyPrayingTime) {
         PrayerTimeItem(
             icon = painterResource(id = R.drawable.fajr),
             prayerName = "الفجر",
-            prayerTime = timings.Fajr
+            prayerTime = timings.Fajr,
+            isNext = nextPrayerName == "الفجر"
+
         )
         PrayerTimeItem(
             icon = painterResource(id = R.drawable.sunrise),
             prayerName = "الشروق",
-            prayerTime = timings.Sunrise
+            prayerTime = timings.Sunrise,
+            isNext = nextPrayerName == "الشروق"
+
         )
         PrayerTimeItem(
             icon = painterResource(id = R.drawable.duhricon),
             prayerName = "الظهر",
-            prayerTime = timings.Dhuhr
+            prayerTime = timings.Dhuhr,
+            isNext = nextPrayerName == "الظهر"
+
         )
         PrayerTimeItem(
             icon = painterResource(id = R.drawable.asricon),
             prayerName = "العصر",
-            prayerTime = timings.Asr
+            prayerTime = timings.Asr,
+            isNext = nextPrayerName == "العصر"
+
         )
         PrayerTimeItem(
             icon = painterResource(id = R.drawable.magreb),
             prayerName = "المغرب",
-            prayerTime = timings.Maghrib
+            prayerTime = timings.Maghrib,
+            isNext = nextPrayerName == "المغرب"
+
         )
         PrayerTimeItem(
             icon = painterResource(id = R.drawable.ishaaicon),
             prayerName = "العشاء",
-            prayerTime = timings.Isha
+            prayerTime = timings.Isha,
+            isNext = nextPrayerName == "العشاء"
+
         )
 
 
@@ -239,11 +232,16 @@ fun item(timings: MonthlyPrayingTime) {
 
 
 @Composable
-fun PrayerTimeItem(icon: Painter, prayerName: String, prayerTime: String) {
+fun PrayerTimeItem(icon: Painter, prayerName: String, prayerTime: String, isNext: Boolean) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp),
+            .background(
+                color = if (isNext) softPurple else Color.Transparent,
+                shape = RoundedCornerShape(100.dp)
+            )
+            .padding(15.dp)
+            ,
     ) {
         Icon(painter = icon, contentDescription = prayerName, modifier = Modifier.size(30.dp))
         Spacer(modifier = Modifier.width(16.dp))
@@ -263,9 +261,10 @@ fun PrayerTimeItem(icon: Painter, prayerName: String, prayerTime: String) {
             fontFamily = FontFamily.Default,
             fontSize = 20.sp,
 
-        )
+            )
 
     }
 }
+
 
 

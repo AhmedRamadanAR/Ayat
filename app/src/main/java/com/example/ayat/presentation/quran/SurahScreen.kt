@@ -1,11 +1,8 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.example.ayat.ui
+package com.example.ayat.presentation.quran
 
 
-import android.app.Application
-
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 
 import androidx.compose.foundation.layout.Box
@@ -33,7 +30,6 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -44,7 +40,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -54,23 +49,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.SavedStateHandle
 
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ayat.Ayahs
 import com.example.ayat.R
-import com.example.ayat.SurahViewModel
-import com.example.ayat.SurahViewModelFactory
 
 import com.example.ayat.ui.theme.AyatTheme
 
 @Composable
-fun SurahScreen(surahId:Int) {
+fun SurahScreen() {
 
-    val app = LocalContext.current.applicationContext as Application
-    val vm: SurahViewModel = viewModel(
-        factory = SurahViewModelFactory(app, SavedStateHandle(mapOf("surahId" to surahId))))
-    LazyColumn {
+    val vm: SurahViewModel = viewModel()
+
+    LazyColumn (Modifier.fillMaxSize().padding(bottom = 60.dp)){
 //        item {
 //            Slider(
 //                value = vm.mediaProgress,
@@ -95,7 +86,7 @@ fun SurahScreen(surahId:Int) {
 
 
 @Composable
-fun SurahItem(ayah: Ayahs, vm:SurahViewModel, expandedState: MutableState<Boolean>, onClick: () -> Unit) {
+fun SurahItem(ayah: Ayahs, vm: SurahViewModel, expandedState: MutableState<Boolean>, onClick: () -> Unit) {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         Card(
            modifier =  Modifier.padding(6.dp),

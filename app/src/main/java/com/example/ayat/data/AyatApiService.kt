@@ -1,5 +1,7 @@
-package com.example.ayat
+package com.example.ayat.data
 
+import com.example.ayat.Doaa
+import com.example.ayat.Root
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -14,7 +16,7 @@ interface AyatApiService {
 //
 
     @GET("calendar/{year}/{month}")
-    suspend fun getPrayingTime(
+    suspend fun getPrayerTime(
         @Path("year") year: String,
         @Path("month") month: String,
         @Query("latitude") latitude: String,

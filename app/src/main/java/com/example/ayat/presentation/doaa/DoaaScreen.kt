@@ -1,4 +1,4 @@
-package com.example.ayat.ui
+package com.example.ayat.presentation.doaa
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -36,7 +36,6 @@ import androidx.compose.ui.tooling.preview.Preview
  import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ayat.Doaa
-import com.example.ayat.DoaaViewModel
 import com.example.ayat.R
 import com.example.ayat.ui.theme.AyatTheme
 import com.example.ayat.ui.theme.PuropleDark

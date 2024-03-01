@@ -1,5 +1,5 @@
 
-package com.example.ayat.ui
+package com.example.ayat.presentation.azkar
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Note
@@ -31,7 +30,6 @@ import androidx.compose.material.icons.outlined.Nightlight
 import androidx.compose.material.icons.outlined.WbSunny
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -56,10 +54,10 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.LayoutDirection.*
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ayat.AzkarViewModel
-import com.example.ayat.MorningEveningAzkarViewModel
 import com.example.ayat.MyZekr
 import com.example.ayat.R
+import com.example.ayat.presentation.doaa.DoaaIcon
+import com.example.ayat.presentation.doaa.DoaaText
 import com.example.ayat.ui.theme.Purple40
 import com.example.ayat.ui.theme.softPurple
 import kotlinx.coroutines.launch
@@ -76,7 +74,7 @@ data class TabItem(val title: String, val selectedIcon: Icon, val unselectedIcon
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AzkarScreen() {
-    val vm:MorningEveningAzkarViewModel= viewModel()
+    val vm: MorningEveningAzkarViewModel = viewModel()
     val tabItem = listOf(
         TabItem(
             "أذكار الصباح",

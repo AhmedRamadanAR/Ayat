@@ -1,11 +1,9 @@
-package com.example.ayat
+package com.example.ayat.presentation.quran
 
-import android.app.Application
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.support.v4.media.session.MediaSessionCompat
 import android.widget.Toast
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -13,6 +11,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.DataManger
+import com.example.ayat.Ayahs
+import com.example.ayat.AyatApplication
+import com.example.ayat.data.InternetObserver
+import com.example.ayat.data.NetworkConnectivityObserver
+import com.example.ayat.Quran
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.delay
@@ -20,7 +23,7 @@ import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
-class SurahViewModel(private val app: Application, saveStateHandle: SavedStateHandle) :
+class SurahViewModel(saveStateHandle: SavedStateHandle) :
     ViewModel() {
 
     var state by mutableStateOf(emptyList<Ayahs>())
@@ -28,9 +31,8 @@ class SurahViewModel(private val app: Application, saveStateHandle: SavedStateHa
     var expandedStates by mutableStateOf(List(state.size) { mutableStateOf(false) })
     var selectedQarie by mutableStateOf(lista[0])
 
-    private val networkConnectivityObserver = NetworkConnectivityObserver(app)
-    private val _networkStatus = mutableStateOf(InternetObserver.Status.Not_Available)
-    private val networkStatus: State<InternetObserver.Status> get() = _networkStatus
+    private val networkConnectivityObserver = NetworkConnectivityObserver(AyatApplication.getApplicationContext())
+    private val networkStatus = mutableStateOf(InternetObserver.Status.Not_Available)
 
     private var mediaSession: MediaSessionCompat? = null
     var mediaPlayer: MediaPlayer? = null
@@ -56,13 +58,13 @@ class SurahViewModel(private val app: Application, saveStateHandle: SavedStateHa
     init {
         val id = saveStateHandle.get<Int>("surahId") ?: 0
         getSurahh(id - 1)
-        mediaSession = MediaSessionCompat(app, "SurahPlayer").apply {
+        mediaSession = MediaSessionCompat(AyatApplication.getApplicationContext(), "SurahPlayer").apply {
             isActive = true
         }
         //  getSurahName()
         viewModelScope.launch {
             networkConnectivityObserver.observe().collect { status ->
-                _networkStatus.value = status
+                networkStatus.value = status
             }
         }
 
@@ -75,7 +77,7 @@ class SurahViewModel(private val app: Application, saveStateHandle: SavedStateHa
             InternetObserver.Status.Available -> {
                 mediaPlayer?.stop()
                 mediaPlayer?.release()
-                Toast.makeText(app.applicationContext, "جارِِِ التشغيل", Toast.LENGTH_SHORT).show()
+                Toast.makeText(AyatApplication.getApplicationContext(), "جارِِِ التشغيل", Toast.LENGTH_SHORT).show()
 
                 mediaPlayer = MediaPlayer().apply {
                     setAudioAttributes(
@@ -102,7 +104,7 @@ class SurahViewModel(private val app: Application, saveStateHandle: SavedStateHa
 
             InternetObserver.Status.Not_Available -> {
                 Toast.makeText(
-                    app.applicationContext,
+                    AyatApplication.getApplicationContext(),
                     "لا يوجد اتصال بالانترنت",
                     Toast.LENGTH_SHORT
                 ).show()
@@ -138,7 +140,7 @@ class SurahViewModel(private val app: Application, saveStateHandle: SavedStateHa
 
     private fun readJSONFromAssets(path: String): String {
         try {
-            app.applicationContext.assets.open(path).use { inputStream ->
+            AyatApplication.getApplicationContext().assets.open(path).use { inputStream ->
                 BufferedReader(InputStreamReader(inputStream)).use { reader ->
                     return reader.readText()
                 }

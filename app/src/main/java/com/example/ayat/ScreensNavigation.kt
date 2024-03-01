@@ -5,8 +5,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.ayat.ui.SurahListScreen
-import com.example.ayat.ui.SurahScreen
+import com.example.ayat.presentation.quran.SurahListScreen
+import com.example.ayat.presentation.quran.SurahScreen
 @Composable
 fun SetScreen(){
     val navController= rememberNavController()
@@ -23,9 +23,8 @@ fun SetScreen(){
                 type= NavType.IntType
             }
 
-        )){ backStackEntry ->
-            val surahId = backStackEntry.arguments?.getInt("surahId")
-            SurahScreen(surahId = surahId ?:0)
+        )){
+            SurahScreen()
         }
 
 

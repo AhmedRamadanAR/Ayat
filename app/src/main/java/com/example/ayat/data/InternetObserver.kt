@@ -1,4 +1,4 @@
-package com.example.ayat
+package com.example.ayat.data
 
 import kotlinx.coroutines.flow.Flow
 

@@ -6,7 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
-import com.example.ayat.ui.AzkarScreen
+import com.example.ayat.presentation.azkar.AzkarScreen
 
 @Composable
 fun BottomNavigationGraph(navController:NavHostController){

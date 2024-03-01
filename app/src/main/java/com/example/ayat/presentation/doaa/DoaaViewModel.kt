@@ -1,10 +1,13 @@
-package com.example.ayat
+package com.example.ayat.presentation.doaa
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.ayat.data.AyatApiService
+import com.example.ayat.Doaa
+import com.example.ayat.data.RetrofitClient
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -57,7 +60,7 @@ init {
     }
     private  fun List<Doaa>.restoreDoaa():List<Doaa>{
 
-        stateHandle.get<List<String>>(fav_doaa)?.let {savedText->
+        stateHandle.get<List<String>>(fav_doaa)?.let { savedText->
          savedText.forEach{doaaText->
              this.find { it.doaatext==doaaText  }?.isFavouite=true
 

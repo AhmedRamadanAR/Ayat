@@ -164,15 +164,15 @@ data class Timings (
 data class Root(
     @SerializedName("code"  )    val code: Long,
     @SerializedName("status"  )    val status: String,
-    @SerializedName("data"  )  val data: List<Daum>,
+    @SerializedName("data"  )  val data: List<Azan>,
 )
-data class Daum(
+data class Azan(
     @SerializedName("timings"  )    val timings: Timings,
     @SerializedName("date"  )  val date: Date,
     @SerializedName("meta"  )    val meta: Meta,
 )
 @Entity
-data class MonthlyPrayingTime(
+data class MonthlyPrayerTime(
  var Fajr       : String= "",
    var Sunrise    : String= "",
    var Dhuhr      : String= "",
@@ -194,5 +194,9 @@ data class MonthlyPrayingTime(
  val yearHijri: String="",
     val today:String=""
 )
+data class AzanState(val monthlyPrayerTime:MonthlyPrayerTime,
+                     val isLoading:Boolean, val countDownTime:String, var nextPrayerTime:String,
+                     var nextFajrTime:String, var error:String?=null)
+
 
 

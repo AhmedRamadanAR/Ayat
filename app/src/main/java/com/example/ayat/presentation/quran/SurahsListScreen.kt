@@ -1,6 +1,4 @@
-package com.example.ayat.ui
-
-import android.app.Application
+package com.example.ayat.presentation.quran
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,9 +15,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -27,23 +23,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ayat.References
-import com.example.ayat.SurahViewModel
-import com.example.ayat.SurahViewModelFactory
-import com.example.ayat.SurahsListViewModel
-import com.example.ayat.SurahsListViewModelFactory
 import com.example.ayat.ui.theme.darkGrey
 import com.example.ayat.ui.theme.softPurple
 
 
 @Composable
 fun SurahListScreen(onItemClick: (Int) -> Unit) {
-    val app = LocalContext.current.applicationContext as Application
-    val vm: SurahsListViewModel = viewModel(factory = SurahsListViewModelFactory(app, SavedStateHandle()))
+    val vm: SurahsListViewModel = viewModel()
 
-    LazyColumn(){
+    LazyColumn(Modifier.fillMaxSize().padding(bottom = 60.dp)){
         item {
         }
         items(vm.surahDataState){
@@ -91,7 +81,7 @@ fun SurahItem(Surah:References, onItemClick:(Int)->Unit) {
                 Text(text = "عدد اياتها  : "+"${Surah.numberOfAyahs}", fontWeight = FontWeight.Normal,modifier=Modifier.weight(0.5f),textAlign = TextAlign.Center)
                 Spacer(modifier = Modifier.padding(horizontal = 10.dp))
 
-                Text(text = "${Surah.revelationType}", fontWeight = FontWeight.Normal,modifier=Modifier.weight(0.4f),textAlign = TextAlign.Center)
+                Text(text = Surah.revelationType, fontWeight = FontWeight.Normal,modifier=Modifier.weight(0.4f),textAlign = TextAlign.Center)
                 Spacer(modifier = Modifier.padding(horizontal = 3.dp))
 
             }

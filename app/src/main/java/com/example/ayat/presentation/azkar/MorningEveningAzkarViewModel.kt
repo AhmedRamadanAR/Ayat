@@ -1,41 +1,46 @@
-package com.example.ayat
+package com.example.ayat.presentation.azkar
 
-import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.ayat.AyatApplication
+import com.example.ayat.MEAzkar
+import com.example.ayat.MorningEveningAzkar
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
-class SurahsListViewModel(private val app: Application, saveStateHandle: SavedStateHandle) : ViewModel() {
-    var surahDataState by mutableStateOf(emptyList<References>())
+class MorningEveningAzkarViewModel:ViewModel() {
+    var monringList by mutableStateOf(emptyList<MorningEveningAzkar>())
+    var EveningList by mutableStateOf(emptyList<MorningEveningAzkar>())
     private val errorHandler = CoroutineExceptionHandler { _, _ ->
     }
+
     init {
-        getSurahsLists()
+        getAzkarList()
     }
-    private fun getSurahsLists(){
+    private  fun getAzkarList(){
         viewModelScope.launch (errorHandler){
-            val surahsList=getSurahListFromJSON()
-            surahDataState=surahsList.references
+                val x=getAzkarListFromJSON()
+                monringList=x.MorningAzkar
+               EveningList=x.EveningAzkar
         }
     }
-    private fun getSurahListFromJSON(): NameList {
-        val jsonString = readJSONFromAssets("References.json")
+    private fun getAzkarListFromJSON(): MEAzkar {
+        val jsonString = readJSONFromAssets("morningazkar.json")
         val gson = Gson()
-        val NameList = gson.fromJson(jsonString, NameList::class.java)
+        val NameList = gson.fromJson(jsonString, MEAzkar::class.java)
         return NameList
     }
 
+
     private fun readJSONFromAssets(path: String): String {
         try {
-            app.applicationContext.assets.open(path).use { inputStream ->
+            AyatApplication.getApplicationContext().assets.open(path).use { inputStream ->
                 BufferedReader(InputStreamReader(inputStream)).use { reader ->
                     return reader.readText()
                 }
@@ -45,4 +50,6 @@ class SurahsListViewModel(private val app: Application, saveStateHandle: SavedSt
             return ""
         }
     }
+
+
 }
