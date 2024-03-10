@@ -4,7 +4,7 @@ Ayat V1 :
 <img src="https://github.com/AhmedRamadanAR/Ayat/assets/77992277/04135750-c161-4904-8de8-d6d012b5f056" width="400" height="600">
 <img src="https://github.com/AhmedRamadanAR/Ayat/assets/77992277/0bfc5596-cc0b-4cde-9b8c-ab66878f28b1" width="400" height="600">
 <img src="https://github.com/AhmedRamadanAR/Ayat/assets/77992277/46b2faaf-97b8-4c79-8c91-cb87efac8ed5" width="400" height="600">
-<img src="(https://github.com/AhmedRamadanAR/Ayat/assets/77992277/0ff78226-7534-4f65-a1ce-1581f08cc8d0" width="400" height="600">
+<img src="https://github.com/AhmedRamadanAR/Ayat/assets/77992277/0ff78226-7534-4f65-a1ce-1581f08cc8d0" width="400" height="600">
 
 
 
