@@ -35,29 +35,28 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
  import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ayat.Doaa
+import com.example.ayat.data.localdata.Doaa
 import com.example.ayat.R
 import com.example.ayat.ui.theme.AyatTheme
 import com.example.ayat.ui.theme.PuropleDark
 import com.example.ayat.ui.theme.Purple40
 
 
-@Composable
-fun DoaaScreen(){
-    val vm= viewModel<DoaaViewModel>()
-    LazyColumn (modifier = Modifier
-        .fillMaxSize()
-        .padding(4.dp),
-        contentPadding = PaddingValues(bottom = 20.dp))
-    {
-     items(vm.state){doaa->
-         DoaaItem(doaa =doaa ){
-         vm.toggleFavouriteState(it)
-         }
-
-     }
-    }
-}
+//@Composable
+//fun DoaaScreen(){
+//    LazyColumn (modifier = Modifier
+//        .fillMaxSize()
+//        .padding(4.dp),
+//        contentPadding = PaddingValues(bottom = 20.dp))
+//    {
+//     items(vm.state){doaa->
+//         DoaaItem(doaa =doaa ){
+//         vm.toggleFavouriteState(it)
+//         }
+//
+//     }
+//    }
+//}
 @Composable
 fun DoaaItem(doaa: Doaa, onClick: (String) -> Unit){
     val icon = if(doaa.isFavouite) {
@@ -108,6 +107,7 @@ fun DoaaItem(doaa: Doaa, onClick: (String) -> Unit){
 
 
         }
+
 
 
     }

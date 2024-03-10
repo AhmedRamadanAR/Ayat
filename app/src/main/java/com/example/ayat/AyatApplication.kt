@@ -2,7 +2,9 @@ package com.example.ayat
 
 import android.app.Application
 import android.content.Context
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class AyatApplication:Application(){
 
     init {

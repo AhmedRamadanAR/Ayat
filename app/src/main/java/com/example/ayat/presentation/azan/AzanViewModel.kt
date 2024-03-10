@@ -1,19 +1,16 @@
 package com.example.ayat.presentation.azan
-import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
+
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.ayat.AyatApplication
-import com.example.ayat.AzanState
-import com.example.ayat.MonthlyPrayerTime
-import com.example.ayat.data.AzanRepository
-import kotlinx.coroutines.CoroutineExceptionHandler
+import com.example.ayat.data.localdata.AzanState
+import com.example.ayat.data.localdata.MonthlyPrayerTime
+import com.example.ayat.data.repositories.AzanRepository
+import com.google.android.gms.location.LocationServices
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
@@ -26,12 +23,13 @@ import kotlinx.coroutines.flow.StateFlow
 import java.time.Duration
 import java.time.LocalDate
 import java.time.format.DateTimeParseException
+import javax.inject.Inject
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+@HiltViewModel
 
-class AzanViewModel : ViewModel() {
-    private val azanRepo = AzanRepository()
-   private var _prayerTime = MutableStateFlow(
+class AzanViewModel @Inject constructor(private val azanRepo : AzanRepository) : ViewModel() {
+
+    private var _prayerTime = MutableStateFlow(
         AzanState(
             monthlyPrayerTime = MonthlyPrayerTime(dateGregorian = ""),
             isLoading = true,
@@ -40,76 +38,69 @@ class AzanViewModel : ViewModel() {
             nextFajrTime = ""
         )
     )
-    val prayerTime : StateFlow<AzanState> =_prayerTime
+    val prayerTime: StateFlow<AzanState> = _prayerTime
 
-    private val current: LocalDateTime = LocalDateTime.now()
     private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
-    private val year = current.year.toString()
-    private val month = current.monthValue.toString()
-    private val errorHandler = CoroutineExceptionHandler { _, throwable ->
-        throwable.printStackTrace()
-        _prayerTime.value = _prayerTime.value.copy(isLoading = false, error = throwable.message)
-    }
-    private val save = intPreferencesKey("month")
-    //  var latitude by mutableStateOf("")
-    // var longitude by mutableStateOf("")
-    
-    // private val fusedLocationClient = LocationServices.getFusedLocationProviderClient(AyatApplication.getApplicationContext())
-//   @SuppressLint("MissingPermission")
-//   fun startLocationUpdates() {
-//
-//      val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
-//         .setMinUpdateIntervalMillis(5000)
-//         .build()
-//
-//      val locationCallback = object : LocationCallback() {
-//         override fun onLocationResult(locationResult: LocationResult) {
-//            locationResult ?: return
-//            for (location in locationResult.locations){
-//                    this@AzanViewModel.latitude=location.latitude.toString()
-//               this@AzanViewModel.longitude=location.longitude.toString()
-//            }
-//         }
-//      }
-//
-//      fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
-//   }
-
-
     init {
-        viewModelScope.launch {
-            getMonthlyPrayerTime()
+            startLocationUpdates()
+
+
+    }
+    @SuppressLint("MissingPermission")
+    fun startLocationUpdates() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val fusedLocationClient =
+                LocationServices.getFusedLocationProviderClient(AyatApplication.getApplicationContext())
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        azanRepo.saveLocation(
+                            location.latitude.toString(),
+                            location.longitude.toString()
+                        )
+
+                        getMonthlyPrayerTime()
+                    }
+                } else {
+
+                    getMonthlyPrayerTime()
+                }
+            }
         }
     }
 
 
     private fun getMonthlyPrayerTime() {
         viewModelScope.launch(Dispatchers.IO) {
+             val current: LocalDateTime = LocalDateTime.now()
+             val year = current.year.toString()
+             val month = current.monthValue.toString()
             val nextMonth = current.plusMonths(1).monthValue.toString()
-            val storedMonth =
-                AyatApplication.getApplicationContext().dataStore.data.first()[save] ?: 0
+            val storedMonth = azanRepo.getStoredMonth()
+            val latitude = azanRepo.getLatitude()
+            val longitude = azanRepo.getLongitude()
             if (month.toInt() != storedMonth) {
                 azanRepo.deleteFromDb(storedMonth.toLong())
             }
             try {
-                azanRepo.callFromApitoDb(year, month)
-                AyatApplication.getApplicationContext().dataStore.edit {
-                    it[save] = month.toInt()
-                }
-                azanRepo.callForNextMonthApitoDb(year, nextMonth)
+                azanRepo.callFromApitoDb(year, month, latitude, longitude)
+                azanRepo.saveMonth(month.toInt())
+                azanRepo.callForNextMonthApitoDb(year, nextMonth, latitude, longitude)
                 getPrayerTimeDB()
             } catch (e: Exception) {
                 getPrayerTimeDB()
-
-
             }
         }
     }
 
 
     private fun getPrayerTimeDB() {
-        viewModelScope.launch(Dispatchers.IO + errorHandler) {
+        viewModelScope.launch(Dispatchers.IO) {
+            Log.d("testing", "azanviewmodel: db")
+
             try {
+                 val current: LocalDateTime = LocalDateTime.now()
+
                 val currentDate = current.format(formatter)
                 val nextDate = current.plusDays(1).format(formatter)
                 val currentPrayerTime = azanRepo.getprayerbydate(currentDate)
@@ -133,12 +124,13 @@ class AzanViewModel : ViewModel() {
                     startCountdown(prayerTimes)
                 }
             } catch (ex: Exception) {
-                if (azanRepo.checking()) {
-                    throw Exception("please connect to the internet")
-                }
+                Log.d("bla", "getPrayerTimeDB: $ex")
             }
+
+
         }
     }
+
 
     private fun startCountdown(prayerTimes: List<String>) {
         viewModelScope.launch {
@@ -192,7 +184,7 @@ class AzanViewModel : ViewModel() {
             }
         }
     }
-    
+
     private fun getNextPrayerName(prayerTime: AzanState): String {
         val now = LocalTime.now()
         val prayerTimes = listOf(

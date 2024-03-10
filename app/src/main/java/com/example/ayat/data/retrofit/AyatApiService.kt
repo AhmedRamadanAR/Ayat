@@ -1,19 +1,15 @@
-package com.example.ayat.data
+package com.example.ayat.data.retrofit
 
-import com.example.ayat.Doaa
-import com.example.ayat.Root
+import com.example.ayat.data.localdata.Root
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 
 interface AyatApiService {
-    @GET(".json")
-    suspend fun getDoaa(): List<Doaa>
+//    @GET(".json")
+//    suspend fun getDoaa(): List<Doaa>
 
-//    @GET("audio/128/{edition}/{number}.mp3")
-//    suspend fun getSurah(@Path("number") number: String,@Path("edition") edition:String)
-//
 
     @GET("calendar/{year}/{month}")
     suspend fun getPrayerTime(

@@ -1,4 +1,3 @@
-
 package com.example.ayat.presentation.azkar
 
 import android.annotation.SuppressLint
@@ -53,8 +52,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.LayoutDirection.*
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ayat.MyZekr
+import com.example.ayat.data.localdata.MyZekr
 import com.example.ayat.R
 import com.example.ayat.presentation.doaa.DoaaIcon
 import com.example.ayat.presentation.doaa.DoaaText
@@ -73,8 +71,7 @@ data class TabItem(val title: String, val selectedIcon: Icon, val unselectedIcon
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AzkarScreen() {
-    val vm: MorningEveningAzkarViewModel = viewModel()
+fun AzkarScreen(vm: MorningEveningAzkarViewModel,viewmodelME: AzkarViewModel) {
     val tabItem = listOf(
         TabItem(
             "أذكار الصباح",
@@ -160,9 +157,9 @@ fun AzkarScreen() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     when (index) {
-                        0-> MorningEveningScreen(List = vm.monringList)
-                        1 -> MorningEveningScreen(List = vm.EveningList)
-                        2 -> ItemsScreen()
+                        0 -> MorningEveningScreen(List = vm.monringList)
+                        1 -> MorningEveningScreen(List = vm.eveningList)
+                        2 -> ItemsScreen(viewmodelME)
                         else -> Text(text = "hello nothing")
                     }
                 }
@@ -172,59 +169,65 @@ fun AzkarScreen() {
 }
 
 @Composable
-fun ItemsScreen() {
-        val vm: AzkarViewModel = viewModel()
+fun ItemsScreen(
+    vm: AzkarViewModel
+) {
 
-        val zekrList by vm.zekrList.collectAsState()
-      Box(modifier =Modifier.fillMaxSize() ){
-          LazyColumn(Modifier.fillMaxSize().padding(bottom = 60.dp)) {
+    val zekrList by vm.zekrList.collectAsState()
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            Modifier
+                .fillMaxSize()
+                .padding(bottom = 60.dp)) {
 
-              items(zekrList) { item ->
-                  Item(item = item, vm = vm)
-              }
-
-          }
-          FloatingActionButton(onClick = {vm.showAddDialog=true},
-              Modifier
-                  .align(Alignment.BottomEnd)
-                  .padding(horizontal = 10.dp, vertical = 100.dp), containerColor = softPurple) {
-                  Icon(Icons.Filled.Add,"add_icon")
-          }
-      }
-        if (vm.showAddDialog) {
-            val textState = remember { mutableStateOf("") }
-
-            ReusableDialog(
-                titleText = "إضافة جديدة",
-                confirmText = "تأكيد",
-                dismissText = "إلغاء",
-                onConfirm = { vm.addZekr(textState.value) },
-                onDismiss = { vm.showAddDialog = false },
-                textFieldLabel = "ذكر/دعاء جديد",
-                textFieldValue = textState
-            )
+            items(zekrList) { item ->
+                Item(item = item, vm = vm)
+            }
 
         }
-
-        if (vm.showUpdateDialog) {
-            var liveText = remember { mutableStateOf(vm.selectedItem.zekr) }
-
-            ReusableDialog(
-                titleText = "تعديل",
-                confirmText = "تأكيد",
-                dismissText = "إلغاء",
-                onConfirm = {
-                    vm.updateZekr(vm.selectedItem.zekr, liveText.value)
-                    liveText.value = ""
-                },
-                onDismiss = { vm.showUpdateDialog=false },
-                textFieldLabel = "",
-                textFieldValue = liveText
-            )
-
+        FloatingActionButton(
+            onClick = { vm.showAddDialog = true },
+            Modifier
+                .align(Alignment.BottomEnd)
+                .padding(horizontal = 10.dp, vertical = 100.dp), containerColor = softPurple
+        ) {
+            Icon(Icons.Filled.Add, "add_icon")
         }
+    }
+    if (vm.showAddDialog) {
+        val textState = remember { mutableStateOf("") }
+
+        ReusableDialog(
+            titleText = "إضافة جديدة",
+            confirmText = "تأكيد",
+            dismissText = "إلغاء",
+            onConfirm = { vm.addZekr(textState.value) },
+            onDismiss = { vm.showAddDialog = false },
+            textFieldLabel = "ذكر/دعاء جديد",
+            textFieldValue = textState
+        )
 
     }
+
+    if (vm.showUpdateDialog) {
+        val liveText = remember { mutableStateOf(vm.selectedItem.zekr) }
+
+        ReusableDialog(
+            titleText = "تعديل",
+            confirmText = "تأكيد",
+            dismissText = "إلغاء",
+            onConfirm = {
+                vm.updateZekr(vm.selectedItem.zekr, liveText.value)
+                liveText.value = ""
+            },
+            onDismiss = { vm.showUpdateDialog = false },
+            textFieldLabel = "",
+            textFieldValue = liveText
+        )
+
+    }
+
+}
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

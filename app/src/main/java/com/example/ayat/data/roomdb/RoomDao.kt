@@ -1,15 +1,15 @@
-package com.example.ayat.data
+package com.example.ayat.data.roomdb
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.ayat.MonthlyPrayerTime
-import com.example.ayat.MyZekr
+import com.example.ayat.data.localdata.MonthlyPrayerTime
+import com.example.ayat.data.localdata.MyZekr
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface AzkarDao {
+interface RoomDao {
     @Query("SELECT * FROM MyZekr")
      fun getAllZekr(): Flow<List<MyZekr>>
     @Insert

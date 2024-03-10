@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.sp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.example.ayat.MorningEveningAzkar
+import com.example.ayat.data.localdata.MorningEveningAzkar
 import com.example.ayat.presentation.doaa.DoaaText
 import com.example.ayat.R
 import com.example.ayat.ui.theme.Purple40
@@ -52,7 +52,7 @@ fun MorningEveningScreen(List:List<MorningEveningAzkar>) {
 }
 
 @Composable
-fun Item(item:MorningEveningAzkar) {
+fun Item(item: MorningEveningAzkar) {
     val count = remember { mutableStateOf(item.count) }
 
     Card(
@@ -79,7 +79,7 @@ fun Item(item:MorningEveningAzkar) {
 }
 
 @Composable
-fun CountdownButton(modifier: Modifier, item: MorningEveningAzkar,count: MutableState<Int>) {
+fun CountdownButton(modifier: Modifier, item: MorningEveningAzkar, count: MutableState<Int>) {
 
 
 Button(

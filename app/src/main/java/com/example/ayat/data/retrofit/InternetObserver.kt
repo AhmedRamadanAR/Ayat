@@ -1,11 +1,11 @@
-package com.example.ayat.data
+package com.example.ayat.data.retrofit
 
 import kotlinx.coroutines.flow.Flow
 
 interface InternetObserver {
     fun observe() :Flow<Status>
-    enum class Status(){
+    enum class Status{
          Available,
-        Not_Available
+        NotAvailable
     }
 }

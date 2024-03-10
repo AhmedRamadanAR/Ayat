@@ -1,4 +1,4 @@
-package com.example.ayat.data
+package com.example.ayat.data.retrofit
 
 import android.content.Context
 import android.net.ConnectivityManager
@@ -23,7 +23,7 @@ class NetworkConnectivityObserver(context:Context): InternetObserver {
                 override fun onLost(network: Network) {
                     super.onLost(network)
 
-                    launch { send(InternetObserver.Status.Not_Available) }
+                    launch { send(InternetObserver.Status.NotAvailable) }
                 }
             }
            connectivityManager.registerDefaultNetworkCallback(callBack)

@@ -3,7 +3,10 @@
 package com.example.ayat.presentation.quran
 
 
+
+import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSizeIn
@@ -19,9 +23,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -34,49 +42,72 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ayat.Ayahs
+import com.example.ayat.data.localdata.Ayahs
 import com.example.ayat.R
 
 import com.example.ayat.ui.theme.AyatTheme
 
 @Composable
-fun SurahScreen() {
+fun SurahScreen( vm:SurahViewModel) {
+    val context= LocalContext.current
 
-    val vm: SurahViewModel = viewModel()
+    val listState = rememberLazyListState()
+    val toastMessage by vm.toastMessage.collectAsState()
 
-    LazyColumn (Modifier.fillMaxSize().padding(bottom = 60.dp)){
-//        item {
-//            Slider(
-//                value = vm.mediaProgress,
-//                valueRange = -1f..vm.mediaDuration,
-//                onValueChange = { newProgress ->
-//                    vm.mediaPlayer?.seekTo(newProgress.toInt())
-//                }
-//            )
-//            val minutes = (vm.mediaDuration / 60).toInt()
-//            val seconds = (vm.mediaDuration % 60).toInt()
-//            Text(text = String.format("%02d:%02d", minutes, seconds))
-//        }
+    LaunchedEffect(toastMessage) {
+        if (toastMessage.isNotEmpty()) {
+            Toast.makeText(context, toastMessage, Toast.LENGTH_SHORT).show()
+        }
+    }
+    LaunchedEffect(vm.scrollToAyahIndex) {
+        val index = vm.scrollToAyahIndex
+        if (index != -1) {
+            listState.animateScrollToItem(index)
+        }
+    }
 
 
-        itemsIndexed(vm.state) { index, ayah ->
+    TextField(modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp),
+        value = vm.searchQuery,
+        onValueChange = { query ->
+            vm. searchQuery = query
+        },
+        label = { Text("ابحث برقم الآية") },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+
+        keyboardActions = KeyboardActions(onDone = {vm.searchAyahByNumber() }),
+        trailingIcon = {Icon(imageVector = Icons.Outlined.Search, contentDescription = "",modifier=Modifier.clickable {
+            vm.searchAyahByNumber()
+        })}
+    )
+
+
+    LazyColumn (state = listState, modifier = Modifier
+        .fillMaxSize()
+        .padding(bottom = 60.dp, top = 60.dp)){
+
+        itemsIndexed(vm.ayahsState) { index, ayah ->
             SurahItem(ayah = ayah, vm = vm, expandedState = vm.expandedStates[index]) {
                 vm.playAudio(ayah.number,vm.selectedQarie)
             }
@@ -124,6 +155,7 @@ fun SurahItem(ayah: Ayahs, vm: SurahViewModel, expandedState: MutableState<Boole
     }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuraaList(vm: SurahViewModel, expandedState: MutableState<Boolean>) {
@@ -146,7 +178,7 @@ fun QuraaList(vm: SurahViewModel, expandedState: MutableState<Boolean>) {
             modifier = Modifier.requiredSizeIn(maxHeight = 200.dp), // Set your desired maxHeight
             expanded = expandedState.value,
             onDismissRequest = {expandedState.value=false }) {
-           vm.lista.forEach{selectionOption->
+           vm.quraaList.forEach{ selectionOption->
                 DropdownMenuItem(
                     modifier = Modifier.wrapContentSize(),
                     text = { Text(selectionOption , fontSize = 15.sp, fontWeight = FontWeight.Normal) },

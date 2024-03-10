@@ -1,21 +1,21 @@
 package com.example.ayat.presentation.azkar
-
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ayat.AyatApplication
-import com.example.ayat.data.AyatDB
-import com.example.ayat.MyZekr
-import kotlinx.coroutines.CoroutineExceptionHandler
+import com.example.ayat.data.repositories.AzkarRepository
+import com.example.ayat.data.localdata.MyZekr
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+@HiltViewModel
 
-class AzkarViewModel:ViewModel() {
+class AzkarViewModel @Inject constructor(private val azkarRepository:AzkarRepository):ViewModel() {
+
     var zekrList = MutableStateFlow(listOf<MyZekr>())
     var selectedItem by  mutableStateOf(MyZekr(""))
     var showAddDialog by mutableStateOf(false)
@@ -24,44 +24,39 @@ class AzkarViewModel:ViewModel() {
 
 
 
-    private val errorHandler = CoroutineExceptionHandler { _, throwable ->
-        throwable.printStackTrace()
-        Log.d("boom", ": hhh")
-    }
 
-    val azkarDao = AyatDB.getDaoInstance(AyatApplication.getApplicationContext())
 
     init {
         getAllAzkar()
     }
 
     private fun getAllAzkar() {
-        viewModelScope.launch(errorHandler) {
-            azkarDao.getAllZekr().collect { list ->
+        viewModelScope.launch {
+            azkarRepository.getAllAzkar().collect { list ->
                 zekrList.value = list
             }
         }
     }
 
     fun addZekr(zekr: String) {
-        viewModelScope.launch(errorHandler) {
+        viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                azkarDao.addZekr(MyZekr(zekr))
+                azkarRepository.addZekr(zekr)
             }
         }
     }
 
     fun deleteZekr(zekr: String) {
-        viewModelScope.launch(errorHandler) {
+        viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                azkarDao.deleteZekr(zekr)
+                azkarRepository.deleteZekr(zekr)
             }
         }
     }
     fun updateZekr(oldZekr: String, newZekr: String) {
-        viewModelScope.launch(errorHandler) {
+        viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                azkarDao.updateZekr(oldZekr, newZekr)
+                azkarRepository.updateZekr(oldZekr, newZekr)
             }
         }
     }

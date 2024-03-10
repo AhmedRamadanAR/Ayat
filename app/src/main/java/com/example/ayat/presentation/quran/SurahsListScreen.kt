@@ -23,21 +23,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ayat.References
+import com.example.ayat.data.localdata.References
 import com.example.ayat.ui.theme.darkGrey
 import com.example.ayat.ui.theme.softPurple
 
 
 @Composable
-fun SurahListScreen(onItemClick: (Int) -> Unit) {
-    val vm: SurahsListViewModel = viewModel()
+fun SurahListScreen(
+    state: List<References>,
+    onItemClick: (Int) -> Unit
+) {
 
     LazyColumn(Modifier.fillMaxSize().padding(bottom = 60.dp)){
         item {
         }
-        items(vm.surahDataState){
-            SurahItem(Surah = it){id->
+        items(state){
+            SurahItem(surah = it){ id->
                 onItemClick(id)
             }
         }
@@ -45,13 +46,13 @@ fun SurahListScreen(onItemClick: (Int) -> Unit) {
 }
 
 @Composable
-fun SurahItem(Surah:References, onItemClick:(Int)->Unit) {
+fun SurahItem(surah: References, onItemClick:(Int)->Unit) {
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         Card(
             Modifier
                 .padding(8.dp)
-                .clickable { onItemClick(Surah.number) },
+                .clickable { onItemClick(surah.number) },
             elevation = CardDefaults.cardElevation(4.dp),
             shape = RoundedCornerShape(10.dp),
             border = BorderStroke(1.dp, softPurple)
@@ -64,7 +65,7 @@ fun SurahItem(Surah:References, onItemClick:(Int)->Unit) {
             ) {
 
                 Text(
-                    text = Surah.name,
+                    text = surah.name,
                     textAlign = TextAlign.Right,
                     style = TextStyle(
                         color = darkGrey,
@@ -76,12 +77,12 @@ fun SurahItem(Surah:References, onItemClick:(Int)->Unit) {
 
             }
             Row(modifier=Modifier.fillMaxSize(), horizontalArrangement = Arrangement.End){
-                Text(text = " ترتيب السورة : "+"${Surah.number}", fontWeight = FontWeight.Normal,modifier=Modifier.weight(0.5f),textAlign = TextAlign.Start)
+                Text(text = " ترتيب السورة : "+"${surah.number}", fontWeight = FontWeight.Normal,modifier=Modifier.weight(0.5f),textAlign = TextAlign.Start)
 
-                Text(text = "عدد اياتها  : "+"${Surah.numberOfAyahs}", fontWeight = FontWeight.Normal,modifier=Modifier.weight(0.5f),textAlign = TextAlign.Center)
+                Text(text = "عدد اياتها  : "+"${surah.numberOfAyahs}", fontWeight = FontWeight.Normal,modifier=Modifier.weight(0.5f),textAlign = TextAlign.Center)
                 Spacer(modifier = Modifier.padding(horizontal = 10.dp))
 
-                Text(text = Surah.revelationType, fontWeight = FontWeight.Normal,modifier=Modifier.weight(0.4f),textAlign = TextAlign.Center)
+                Text(text = surah.revelationType, fontWeight = FontWeight.Normal,modifier=Modifier.weight(0.4f),textAlign = TextAlign.Center)
                 Spacer(modifier = Modifier.padding(horizontal = 3.dp))
 
             }

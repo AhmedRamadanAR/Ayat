@@ -1,4 +1,4 @@
-package com.example.ayat
+package com.example.ayat.data.localdata
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -31,16 +31,16 @@ var isFavouite:Boolean=false
 
 data class Ayahs (
 
-    @SerializedName("number"         ) var number         : Int,
-    @SerializedName("audio"          ) var audio          : String,
+    @SerializedName("number"         ) var number         : Int=0,
+    @SerializedName("audio"          ) var audio          : String="",
     @SerializedName("audioSecondary" ) var audioSecondary : ArrayList<String> = arrayListOf(),
-    @SerializedName("text"           ) var text           : String,
-    @SerializedName("numberInSurah"  ) var numberInSurah  : Int ,
-    @SerializedName("juz"            ) var juz            : Int,
-    @SerializedName("manzil"         ) var manzil         : Int ,
-    @SerializedName("page"           ) var page           : Int ,
-    @SerializedName("ruku"           ) var ruku           : Int ,
-    @SerializedName("hizbQuarter"    ) var hizbQuarter    : Int ,
+    @SerializedName("text"           ) var text           : String="",
+    @SerializedName("numberInSurah"  ) var numberInSurah  : Int =0,
+    @SerializedName("juz"            ) var juz            : Int=0,
+    @SerializedName("manzil"         ) var manzil         : Int =0,
+    @SerializedName("page"           ) var page           : Int =0,
+    @SerializedName("ruku"           ) var ruku           : Int =0,
+    @SerializedName("hizbQuarter"    ) var hizbQuarter    : Int =0,
 
 )
 
@@ -75,7 +75,7 @@ data class Surahs (
     @SerializedName("revelationType"         ) var revelationType         : String="",
     @SerializedName("numberOfAyahs"          ) var numberOfAyahs          : Int=0,
     @SerializedName("ayahs"                  ) var ayahs                  : ArrayList<Ayahs> = arrayListOf(),
-    @SerializedName("edition"                ) var edition                : Edition= Edition()
+    @SerializedName("edition"                ) var edition                : Edition = Edition()
 )
 data class NameList (
 
@@ -91,6 +91,11 @@ data class References (
     @SerializedName("numberOfAyahs"          ) var numberOfAyahs          : Int    = 0,
     @SerializedName("revelationType"         ) var revelationType         : String = ""
 
+)
+data class HomeDoaaList(val homedoaa: List<HomeDoaa> = listOf<HomeDoaa>())
+
+data class HomeDoaa(
+    val text: String="",
 )
 data class Location(
     val latitude: Double,
@@ -194,7 +199,7 @@ data class MonthlyPrayerTime(
  val yearHijri: String="",
     val today:String=""
 )
-data class AzanState(val monthlyPrayerTime:MonthlyPrayerTime,
+data class AzanState(val monthlyPrayerTime: MonthlyPrayerTime,
                      val isLoading:Boolean, val countDownTime:String, var nextPrayerTime:String,
                      var nextFajrTime:String, var error:String?=null)
 
