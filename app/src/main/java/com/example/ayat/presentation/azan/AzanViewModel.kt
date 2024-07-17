@@ -4,13 +4,16 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ayat.AyatApplication
 import com.example.ayat.data.localdata.AzanState
 import com.example.ayat.data.localdata.MonthlyPrayerTime
 import com.example.ayat.data.repositories.AzanRepository
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
@@ -31,7 +34,7 @@ class AzanViewModel @Inject constructor(private val azanRepo : AzanRepository) :
 
     private var _prayerTime = MutableStateFlow(
         AzanState(
-            monthlyPrayerTime = MonthlyPrayerTime(dateGregorian = ""),
+            dailyPrayerTime = MonthlyPrayerTime(dateGregorian = ""),
             isLoading = true,
             countDownTime = "",
             nextPrayerTime = "",
@@ -42,6 +45,7 @@ class AzanViewModel @Inject constructor(private val azanRepo : AzanRepository) :
 
     private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
     init {
+
             startLocationUpdates()
 
 
@@ -96,7 +100,6 @@ class AzanViewModel @Inject constructor(private val azanRepo : AzanRepository) :
 
     private fun getPrayerTimeDB() {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("testing", "azanviewmodel: db")
 
             try {
                  val current: LocalDateTime = LocalDateTime.now()
@@ -108,11 +111,12 @@ class AzanViewModel @Inject constructor(private val azanRepo : AzanRepository) :
 
                 withContext(Dispatchers.Main) {
                     _prayerTime.value = _prayerTime.value.copy(
-                        monthlyPrayerTime = currentPrayerTime,
+                        dailyPrayerTime = currentPrayerTime,
                         isLoading = true,
-                        nextPrayerTime = getNextPrayerName(_prayerTime.value)
+                        nextPrayerTime = getNextPrayerName(_prayerTime.value),
+                        nextFajrTime = nextPrayerTime.Fajr
                     )
-                    _prayerTime.value.nextFajrTime = nextPrayerTime.Fajr
+
                     val prayerTimes = listOf(
                         currentPrayerTime.Fajr,
                         currentPrayerTime.Dhuhr,
@@ -130,8 +134,6 @@ class AzanViewModel @Inject constructor(private val azanRepo : AzanRepository) :
 
         }
     }
-
-
     private fun startCountdown(prayerTimes: List<String>) {
         viewModelScope.launch {
             while (true) {
@@ -158,7 +160,8 @@ class AzanViewModel @Inject constructor(private val azanRepo : AzanRepository) :
                     continue
                 }
 
-                val nextPrayerTime = futurePrayerTimes.minOrNull()!!
+                val nextPrayerTime = futurePrayerTimes.firstOrNull()!!
+                Log.d("toot", "startCountdown: $nextPrayerTime")
                 while (LocalDateTime.now().isBefore(nextPrayerTime)) {
                     delay(1000L)
                     val totalMinutes =
@@ -172,10 +175,13 @@ class AzanViewModel @Inject constructor(private val azanRepo : AzanRepository) :
                         }:${minutes.toString().padStart(2, '0')}:${
                             seconds.toString().padStart(2, '0')
                         }",
-                        monthlyPrayerTime = _prayerTime.value.monthlyPrayerTime,
+                        dailyPrayerTime = _prayerTime.value.dailyPrayerTime,
                         isLoading = false,
                         nextPrayerTime = getNextPrayerName(_prayerTime.value)
                     )
+//    if (_prayerTime.value.countDownTime == "00:00:00") {
+//        azanRepo.playAzan()
+//    }
 
 
                 }
@@ -185,14 +191,20 @@ class AzanViewModel @Inject constructor(private val azanRepo : AzanRepository) :
         }
     }
 
+
+
+
+
+
+
     private fun getNextPrayerName(prayerTime: AzanState): String {
         val now = LocalTime.now()
         val prayerTimes = listOf(
-            "الفجر" to parseTime(prayerTime.monthlyPrayerTime.Fajr),
-            "الظهر" to parseTime(prayerTime.monthlyPrayerTime.Dhuhr),
-            "العصر" to parseTime(prayerTime.monthlyPrayerTime.Asr),
-            "المغرب" to parseTime(prayerTime.monthlyPrayerTime.Maghrib),
-            "العشاء" to parseTime(prayerTime.monthlyPrayerTime.Isha)
+            "الفجر" to parseTime(prayerTime.dailyPrayerTime.Fajr),
+            "الظهر" to parseTime(prayerTime.dailyPrayerTime.Dhuhr),
+            "العصر" to parseTime(prayerTime.dailyPrayerTime.Asr),
+            "المغرب" to parseTime(prayerTime.dailyPrayerTime.Maghrib),
+            "العشاء" to parseTime(prayerTime.dailyPrayerTime.Isha)
         )
 
         val futurePrayerTimes = prayerTimes.filter { it.second.isAfter(now) }

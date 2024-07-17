@@ -199,7 +199,7 @@ data class MonthlyPrayerTime(
  val yearHijri: String="",
     val today:String=""
 )
-data class AzanState(val monthlyPrayerTime: MonthlyPrayerTime,
+data class AzanState(val dailyPrayerTime: MonthlyPrayerTime,
                      val isLoading:Boolean, val countDownTime:String, var nextPrayerTime:String,
                      var nextFajrTime:String, var error:String?=null)
 
