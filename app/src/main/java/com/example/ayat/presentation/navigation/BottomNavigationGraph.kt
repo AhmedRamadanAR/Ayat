@@ -16,6 +16,8 @@ import com.example.ayat.presentation.azkar.AzkarViewModel
 import com.example.ayat.presentation.azkar.MorningEveningAzkarViewModel
 import com.example.ayat.presentation.location.LocationScreen
 import com.example.ayat.presentation.location.LocationViewModel
+import com.example.ayat.setttings.SettingsScreen
+import com.example.ayat.setttings.SettingsViewModel
 
 
 @SuppressLint("ComposableDestinationInComposeScope")
@@ -30,6 +32,7 @@ fun OnBoardingNavigationGraph(navController: NavHostController){
         navController = navController,
         startDestination = if (isFirstLaunch) Screens.LocationScreen.name else Screens.AzanScreen.name
     ) {
+
         composable(Screens.LocationScreen.name) {
             val vm:LocationViewModel= hiltViewModel()
             LocationScreen(vm) {
@@ -49,6 +52,10 @@ fun OnBoardingNavigationGraph(navController: NavHostController){
             val vmME : AzkarViewModel= hiltViewModel()
 
             AzkarScreen(vm,vmME)
+        }
+        composable(route=Screens.SettingsScreen.name){
+            val vm:SettingsViewModel= hiltViewModel()
+            SettingsScreen(vm)
         }
     }
 }

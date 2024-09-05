@@ -50,7 +50,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.LayoutDirection.*
 import androidx.compose.ui.unit.dp
 import com.example.ayat.data.localdata.MyZekr
 import com.example.ayat.R
@@ -60,12 +59,12 @@ import com.example.ayat.ui.theme.Purple40
 import com.example.ayat.ui.theme.softPurple
 import kotlinx.coroutines.launch
 
-sealed class Icon {
-    data class VectorIcon(val imageVector: ImageVector) : Icon()
-    data class PainterIcon(val painter: Painter) : Icon()
+sealed class IconReusage {
+    data class VectorIcon(val imageVector: ImageVector) : IconReusage()
+    data class PainterIcon(val painter: Painter) : IconReusage()
 }
 
-data class TabItem(val title: String, val selectedIcon: Icon, val unselectedIcon: Icon)
+data class TabItem(val title: String, val selectedIconReusage: IconReusage, val unselectedIconReusage: IconReusage)
 
 
 @SuppressLint("SuspiciousIndentation")
@@ -75,18 +74,18 @@ fun AzkarScreen(vm: MorningEveningAzkarViewModel,viewmodelME: AzkarViewModel) {
     val tabItem = listOf(
         TabItem(
             "أذكار الصباح",
-            unselectedIcon = Icon.VectorIcon(Icons.Outlined.WbSunny),
-            selectedIcon = Icon.VectorIcon(Icons.Filled.WbSunny)
+            unselectedIconReusage = IconReusage.VectorIcon(Icons.Outlined.WbSunny),
+            selectedIconReusage = IconReusage.VectorIcon(Icons.Filled.WbSunny)
         ),
         TabItem(
             "أذكار المساء",
-            unselectedIcon = Icon.VectorIcon(Icons.Outlined.Nightlight),
-            selectedIcon = Icon.VectorIcon(Icons.Filled.Nightlight)
+            unselectedIconReusage = IconReusage.VectorIcon(Icons.Outlined.Nightlight),
+            selectedIconReusage = IconReusage.VectorIcon(Icons.Filled.Nightlight)
         ),
         TabItem(
             "أذكارى",
-            unselectedIcon = Icon.VectorIcon(Icons.AutoMirrored.Outlined.Note),
-            selectedIcon = Icon.VectorIcon(Icons.AutoMirrored.Filled.Note)
+            unselectedIconReusage = IconReusage.VectorIcon(Icons.AutoMirrored.Outlined.Note),
+            selectedIconReusage = IconReusage.VectorIcon(Icons.AutoMirrored.Filled.Note)
         ),
 //        TabItem(
 //            "دعاء",
@@ -127,15 +126,15 @@ fun AzkarScreen(vm: MorningEveningAzkarViewModel,viewmodelME: AzkarViewModel) {
                         },
                         icon = {
                             val icon =
-                                if (index == selectedTabIndex.value) item.selectedIcon else item.unselectedIcon
+                                if (index == selectedTabIndex.value) item.selectedIconReusage else item.unselectedIconReusage
                             when (icon) {
-                                is Icon.VectorIcon -> Icon(
+                                is IconReusage.VectorIcon -> Icon(
                                     imageVector = icon.imageVector,
                                     contentDescription = item.title,
                                     modifier = Modifier.size(25.dp),
                                 )
 
-                                is Icon.PainterIcon -> Image(
+                                is IconReusage.PainterIcon -> Image(
                                     painter = icon.painter,
                                     contentDescription = item.title,
                                     modifier = Modifier.size(25.dp)

@@ -7,8 +7,13 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<!--<uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>-->
+<!--    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>-->
+
+
+
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <application
         android:name=".AyatApplication"
@@ -31,6 +36,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            tools:node="remove" />
+
+
+        <receiver android:name=".presentation.azan.AlarmReceiver" />
+        <service
+            android:name=".presentation.azan.AzanService"
+            android:foregroundServiceType="mediaPlayback" />
+        <receiver android:name=".presentation.azan.CancelAzanReceiver" />
+
+
     </application>
 
 </manifest>

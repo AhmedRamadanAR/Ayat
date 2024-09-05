@@ -203,5 +203,11 @@ data class AzanState(val dailyPrayerTime: MonthlyPrayerTime,
                      val isLoading:Boolean, val countDownTime:String, var nextPrayerTime:String,
                      var nextFajrTime:String, var error:String?=null)
 
+//
+//object Constants {
+//    const val NOTIFICATION_ID= "AzanChannel"
+//    const val COME_TO_PRAY="حى على الصلاة"
+//
+//}
 
 

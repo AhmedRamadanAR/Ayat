@@ -20,12 +20,16 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.LayoutDirection
 
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
@@ -49,79 +53,89 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun LocationScreen(   vm: LocationViewModel,onClick: () -> Unit) {
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
 
-    val context = LocalContext.current
-    Column(
-        Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.location))
-        LottieAnimation(
-            modifier = Modifier
-                .fillMaxWidth()
-                .size(300.dp),
-            composition = composition,
-            iterations = 1,
-        )
-
-        Spacer(modifier = Modifier.padding(20.dp))
-
-        val permissionState = rememberMultiplePermissionsState(
-            listOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION,
+        val context = LocalContext.current
+        Column(
+            Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.location))
+            LottieAnimation(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .size(300.dp),
+                composition = composition,
+                iterations = 1,
             )
-        )
 
-        LaunchedEffect(key1 = permissionState.permissions) {
-            val permissionsToRequest = permissionState.permissions.filter {
-                !it.status.isGranted
-            }
-            if (permissionsToRequest.isNotEmpty()) permissionState.launchMultiplePermissionRequest()
+            Spacer(modifier = Modifier.padding(20.dp))
 
-            while (true) {
-                delay(4000)
-                val allPermissionsRevoked =
-                    permissionState.permissions.size == permissionState.revokedPermissions.size
+            val permissionState = rememberMultiplePermissionsState(
+                listOf(
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                )
+            )
 
-                if (allPermissionsRevoked) {
-                    Toast.makeText(context,"please accept permissions",Toast.LENGTH_SHORT).show()
-                } else {
-                    if (permissionState.allPermissionsGranted) {
-                        vm.getCurrentLocation(
-                            onGetCurrentLocationSuccess = onClick,
-                            onGetLastLocationIsNull = {
-                                vm.getLastUserLocation(
-                                    onGetLastLocationSuccess = onClick,
-                                    onGetLastLocationFailed = {})
-                            },
-                            onGetCurrentLocationFailed = {vm.getLastUserLocation(onGetLastLocationSuccess = onClick, onGetLastLocationFailed = {}) })
+            LaunchedEffect(key1 = permissionState.permissions) {
+                val permissionsToRequest = permissionState.permissions.filter {
+                    !it.status.isGranted
+                }
+                if (permissionsToRequest.isNotEmpty()) permissionState.launchMultiplePermissionRequest()
+
+                while (true) {
+                    delay(4000)
+                    val allPermissionsRevoked =
+                        permissionState.permissions.size == permissionState.revokedPermissions.size
+
+                    if (allPermissionsRevoked) {
+                        Toast.makeText(
+                            context,
+                            "من فضلك قم بقبول الشروط المطلوبة",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        if (permissionState.allPermissionsGranted) {
+                            vm.getCurrentLocation(
+                                onGetCurrentLocationSuccess = onClick,
+                                onGetLastLocationIsNull = {
+                                    vm.getLastUserLocation(
+                                        onGetLastLocationSuccess = onClick,
+                                        onGetLastLocationFailed = {})
+                                },
+                                onGetCurrentLocationFailed = {
+                                    vm.getLastUserLocation(
+                                        onGetLastLocationSuccess = onClick,
+                                        onGetLastLocationFailed = {})
+                                })
+                        }
                     }
+                }
+
+            }
+            val settingResultRequest = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.StartIntentSenderForResult()
+            ) { activityResult ->
+                if (activityResult.resultCode == RESULT_OK) {
+                    Log.d("appDebug", "Accepted")
+                } else {
+                    Log.d("appDebug", "Denied")
                 }
             }
 
-        }
-        val settingResultRequest = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.StartIntentSenderForResult()
-        ) { activityResult ->
-            if (activityResult.resultCode == RESULT_OK) {
-                Log.d("appDebug", "Accepted")
-            } else {
-                Log.d("appDebug", "Denied")
+            Button(onClick = {
+                checkLocationSetting(
+                    context = context,
+                    onDisabled = { intentSenderRequest ->
+                        settingResultRequest.launch(intentSenderRequest)
+                    },
+                    onEnabled = { }
+                )
+            }) {
+                Text(text = stringResource(id = R.string.acceptpermissions))
             }
-        }
-
-        Button(onClick = {
-            checkLocationSetting(
-                context = context,
-                onDisabled = { intentSenderRequest ->
-                    settingResultRequest.launch(intentSenderRequest)
-                },
-                onEnabled = {  }
-            )
-        }) {
-            Text(text = "Request permission")
         }
     }
 }

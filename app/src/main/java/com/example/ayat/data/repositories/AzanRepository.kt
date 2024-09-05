@@ -1,7 +1,10 @@
 package com.example.ayat.data.repositories
 
+import android.app.NotificationManager
 import android.content.Context
 import android.icu.text.SimpleDateFormat
+import android.media.MediaPlayer
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -9,6 +12,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.example.ayat.AyatApplication
+import com.example.ayat.R
 import com.example.ayat.data.localdata.Azan
 import com.example.ayat.data.localdata.MonthlyPrayerTime
 import com.example.ayat.data.retrofit.AyatApiService
@@ -59,6 +63,8 @@ class AzanRepository @Inject constructor( private val azanDao:RoomDao, private v
             it[save] = month
         }
     }
+
+
     suspend fun callFromApitoDb(year:String,month:String,latitude: String,longitude: String){
         val data = apiService.getPrayerTime(year, month, latitude, longitude).data
         val monthlyPrayerTimes = data.map { mapToMonthlyPrayerTime(it) }
@@ -79,6 +85,9 @@ class AzanRepository @Inject constructor( private val azanDao:RoomDao, private v
 
         return  azanDao.getPrayerTimeByDate(date)
 
+    }
+    fun getDataFromDB(): List<MonthlyPrayerTime> {
+        return azanDao.getAll()
     }
     suspend fun callForNextMonthApitoDb(year:String,nextMonth:String,latitude:String,longitude:String){
         val nextMonthData =

@@ -35,7 +35,9 @@ fun MyApp() {
     val items = listOf(
         BottomNavigationItem(route = Screens.AzanScreen.name, title = "مواقيت الصلاة", selectedIcon = painterResource(id = R.drawable.praying), unSelectedIcon = painterResource(id = R.drawable.praying)),
         BottomNavigationItem(route = Screens.SurahsListScreen.name, title = "القرآن", selectedIcon = painterResource(id = R.drawable.filledquran), unSelectedIcon = painterResource(id = R.drawable.quran)),
-        BottomNavigationItem(route = Screens.AzkarScreen.name, title = "أذكار", selectedIcon = painterResource(id = R.drawable.filledopenhands), unSelectedIcon = painterResource(id = R.drawable.openhands))
+        BottomNavigationItem(route = Screens.AzkarScreen.name, title = "أذكار", selectedIcon = painterResource(id = R.drawable.filledopenhands), unSelectedIcon = painterResource(id = R.drawable.openhands)),
+                BottomNavigationItem(route = Screens.SettingsScreen.name, title = "الإعدادات", selectedIcon = painterResource(id = R.drawable.settings_filled), unSelectedIcon = painterResource(id = R.drawable.settings_outlined)),
+
     )
 
     Scaffold(

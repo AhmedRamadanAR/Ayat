@@ -5,7 +5,7 @@ enum class Screens {
   SurahsListScreen,
   LocationScreen,
     AzanScreen,
-  BottomNavigationScreen,
-    AzkarScreen;
+    AzkarScreen,
+  SettingsScreen
 
 }

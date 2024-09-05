@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Ayat</string>
+    <string name="acceptpermissions"> حدد مكانك  </string>
+    <string name="enable_azan" > تشغيل الأذان</string>
+
+
 </resources>

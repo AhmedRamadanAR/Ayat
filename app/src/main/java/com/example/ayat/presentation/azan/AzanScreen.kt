@@ -6,7 +6,6 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -56,7 +55,6 @@ import com.example.ayat.R
 import com.example.ayat.ui.theme.Purple40
 import com.example.ayat.ui.theme.softPurple
 
-data class x(val x: String, val b: String)
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
@@ -128,14 +126,14 @@ fun AzanScreen(   vm: AzanViewModel
             ) {
                 Text(
 
-                        text=prayerTime.monthlyPrayerTime.today + " " + prayerTime.monthlyPrayerTime.dayHijri + " " + prayerTime.monthlyPrayerTime.monthArabicHijri,
+                        text=prayerTime.dailyPrayerTime.today + " " + prayerTime.dailyPrayerTime.dayHijri + " " + prayerTime.dailyPrayerTime.monthArabicHijri,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = Color.White,
                     modifier=Modifier.padding(10.dp)
                 )
                 Text(
-                    prayerTime.monthlyPrayerTime.dateGregorian,
+                    prayerTime.dailyPrayerTime.dateGregorian,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = Color.White,
@@ -200,7 +198,7 @@ fun AzanScreen(   vm: AzanViewModel
             ) {
 
 
-                item(prayerTime.monthlyPrayerTime, prayerTime.nextPrayerTime)
+                item(prayerTime.dailyPrayerTime, prayerTime.nextPrayerTime)
 
             }
 
