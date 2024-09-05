@@ -10,6 +10,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.example.ayat.data.repositories.SettingsRepository
+import com.example.ayat.presentation.azan.AlarmSchedularrImp
 import com.example.ayat.presentation.azan.MyWorker
 import com.example.ayat.presentation.azan.MyWorkerFactory
 import dagger.hilt.android.HiltAndroidApp
@@ -42,6 +43,8 @@ class AyatApplication : Application(), Configuration.Provider {
                     initWork(it)
                 } else {
 cancelWork()
+                    val alarmScheduler = AlarmSchedularrImp(this@AyatApplication)
+                    alarmScheduler.cancelAlarms()
                 }
             }
         }

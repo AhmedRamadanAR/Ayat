@@ -37,7 +37,21 @@ class AlarmSchedularrImp(
         }
     }
 
+     fun cancelAlarms() {
+        val prayerNames = listOf("الفجر", "الظهر", "العصر", "المغرب", "العشاء")
+        prayerNames.forEachIndexed { index, _ ->
+            val intent = Intent(context, AlarmReceiver::class.java)
+            val pendingIntent = PendingIntent.getBroadcast(
+                context,
+                index,intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            alarmManager.cancel(pendingIntent)
+        }
+    }
+
     override fun cancelAlarm(alarmTime: LocalDateTime) {
+        // Not used in this implementation
     }
 
 }

@@ -85,8 +85,10 @@ class AzanService : Service() {
             .setContentTitle("حى على الصلاة")
             .setContentText(notificationText)
             .setLargeIcon(myBitmap)
+            .setOngoing(false)  // Allow swiping away
+            .setAutoCancel(true)
+            .setContentIntent(cancelPendingIntent) // Stops service when clicked
             .setDeleteIntent(cancelPendingIntent)
-            .addAction(R.drawable.check_ic, "تم", cancelPendingIntent)
             .setStyle(
                 NotificationCompat.BigPictureStyle()
                     .bigPicture(myBitmap)
@@ -112,7 +114,7 @@ class AzanService : Service() {
         val serviceChannel = NotificationChannel(
             "AzanChannel",
             "Azan Service Channel",
-            NotificationManager.IMPORTANCE_HIGH
+            NotificationManager.IMPORTANCE_DEFAULT
         )
         serviceChannel.lockscreenVisibility = NotificationCompat.VISIBILITY_PUBLIC
         val manager = getSystemService(NotificationManager::class.java)
