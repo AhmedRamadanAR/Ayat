@@ -8,4 +8,4 @@ Ayat V1 :
 
 
 
-download link : [click here](https://www.mediafire.com/file/o57bsz7157guhox/Ayat.apk/file)
+download link : [click here](https://www.amazon.com/gp/product/B0DGFKTHX3)
